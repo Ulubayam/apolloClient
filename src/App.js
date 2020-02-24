@@ -1,26 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import { useQuery } from "@apollo/react-hooks";
+import { gql } from "apollo-boost";
+
+const RickAndMorty = gql`
+  {
+    characters {
+      results {
+        id
+        name
+        image
+        gender
+        species
+      }
+    }
+  }
+`;
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const { loading, error, data } = useQuery(RickAndMorty);
+  if (loading) return <p>Loading ...</p>;
+  if (error) return <p>Opps !!</p>;
+  return data.characters.results.map(({ id, name, image, gender, species }) => (
+    <p key={id}> {name}</p>
+  ));
 }
 
 export default App;
